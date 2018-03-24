@@ -1,6 +1,7 @@
 package com.techbond.xy.chatzone.Services
 
 import android.graphics.Color
+
 import java.util.*
 
 /**
@@ -9,9 +10,9 @@ import java.util.*
 object UserDataService {
 
     var id =""
-    var email=""
     var avatarColor =""
     var avatarName=""
+    var email=""
     var name =""
 
     fun logout(){
@@ -22,7 +23,7 @@ object UserDataService {
         name=""
         AuthService.authToken=""
         AuthService.userEmail=""
-        AuthService.isLoggenIn=false
+        AuthService.isLoggenIn= false
     }
 
     fun returnAvatarColor (components: String) : Int{

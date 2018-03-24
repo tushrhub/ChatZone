@@ -1,6 +1,5 @@
 package com.techbond.xy.chatzone.Controller
 
-import android.annotation.SuppressLint
 import android.content.Intent
 import android.graphics.Color
 import android.support.v7.app.AppCompatActivity
@@ -24,7 +23,7 @@ class CreateUserActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_create_user)
-
+        createSpinner.visibility = View.INVISIBLE
     }
 
     fun generateUserAvatar(view: View) {
@@ -58,6 +57,7 @@ class CreateUserActivity : AppCompatActivity() {
     }
 
     fun createUserClicked(view: View) {
+        enableSpinner(true)
         val userName = createUsernameText.text.toString()
         val email = createEmailText.text.toString()
         val password = createPasswordText.text.toString()
@@ -72,7 +72,7 @@ class CreateUserActivity : AppCompatActivity() {
 
                                     val userDataChange = Intent(BROADCAST_USER_DATA_CHANGE)
                                     LocalBroadcastManager.getInstance(this).sendBroadcast(userDataChange)
-
+                                    enableSpinner(false)
                                     finish()
                                 } else {
                                     errorToast()
@@ -83,28 +83,33 @@ class CreateUserActivity : AppCompatActivity() {
                         }
                     }
                 } else {
-                    Toast.makeText(this,"Success!! Wait 5 sec",Toast.LENGTH_SHORT).show()
-                    createUserBtn.isEnabled = false
-                    createAvatarImageView.isEnabled = false
-                    backgroundColorBtn.isEnabled = false
-                    createUserBtn.visibility= View.INVISIBLE
+                    Toast.makeText(this,"Success!! Wait for 5 sec",Toast.LENGTH_SHORT).show()
                 }
             }
         }
         else{
-                Toast.makeText(this, "Check the name|email|password ", Toast.LENGTH_SHORT).show()
-                 createUserBtn.isEnabled = true
-                 createAvatarImageView.isEnabled = true
-                 backgroundColorBtn.isEnabled = true
+                Toast.makeText(this, "Check the name|email|password ",
+                        Toast.LENGTH_SHORT).show()
+                 enableSpinner(false)
         }
 
     }
         fun errorToast() {
-            Toast.makeText(this, "Something went wrong, Retry", Toast.LENGTH_SHORT).show()
-
+            Toast.makeText(this, "Something went wrong, Retry",
+                    Toast.LENGTH_SHORT).show()
+            enableSpinner(false)
         }
 
-
+    fun enableSpinner(enable: Boolean) {
+        if (enable) {
+            createSpinner.visibility = View.VISIBLE
+        } else {
+            createSpinner.visibility = View.INVISIBLE
+        }
+        createUserBtn.isEnabled = !enable
+        createAvatarImageView.isEnabled = !enable
+        backgroundColorBtn.isEnabled = !enable
+    }
 }
 
 

@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.Intent
 import android.support.v4.content.LocalBroadcastManager
 import android.util.Log
-import com.android.volley.Request
 import com.android.volley.Response
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.StringRequest
@@ -26,7 +25,6 @@ object AuthService {
         val jsonBody = JSONObject()
         jsonBody.put("email", email)
         jsonBody.put("password", password)
-
         val requestBody = jsonBody.toString()
 
         val registerRequest = object : StringRequest(Method.POST, URL_REGISTER, Response.Listener { response ->
@@ -56,12 +54,8 @@ object AuthService {
         val loginRequest = object : JsonObjectRequest(Method.POST, URL_LOGIN, null, Response.Listener { response ->
             try {
                 userEmail = response.getString("user")
-
-
                 authToken = response.getString("token")
-
                 isLoggenIn = true
-
                 complete(true)
             } catch (e: JSONException) {
                 Log.d("JSON", "EXC: " + e.localizedMessage)
@@ -131,13 +125,13 @@ object AuthService {
     }
 
     fun findUserByEmail(context: Context, complete: (Boolean) -> Unit){
-        val findUserRequest = object : JsonObjectRequest(Method.GET,"$URL_GET_USER$userEmail", null, Response.Listener {
+        val findUserRequest = object : JsonObjectRequest(Method.GET,"$URL_GET_USER$userEmail", null, Response.Listener { response->
         try{
-           UserDataService.name = it.getString("name")
-            UserDataService.email = it.getString("email")
-            UserDataService.avatarName=it.getString("avatarName")
-            UserDataService.avatarColor=it.getString("avatarColor")
-            UserDataService.id= it.getString("id")
+            UserDataService.name = response.getString("name")
+            UserDataService.email = response.getString("email")
+            UserDataService.avatarName=response.getString("avatarName")
+            UserDataService.avatarColor=response.getString("avatarColor")
+            UserDataService.id= response.getString("_id")
 
             val userDataChange = Intent(BROADCAST_USER_DATA_CHANGE)
             LocalBroadcastManager.getInstance(context).sendBroadcast(userDataChange)
@@ -148,7 +142,7 @@ object AuthService {
 
         }, Response.ErrorListener { error ->
 
-            Log.d("ERROR", "Couldn't Login User")
+            Log.d("ERROR", "Couldn't Find User")
             complete(false)
         }) {
 
